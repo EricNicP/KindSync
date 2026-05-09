@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KindSync 🌿
+### Impact Synchronized.
 
-## Getting Started
+**KindSync** is a high-performance logistics protocol designed to eliminate friction in charitable giving. It bridges the gap between surplus resources and human need, connecting verified donors directly with NGO nodes through a transparent and decentralized synchronization network.
 
-First, run the development server:
+---
 
+## ✨ Key Features
+
+- **🎯 Precision Synchronization**: Direct connection between individual donors and local NGO distribution nodes.
+- **🛡️ Protocol Verification**: A 24-point audit system for participating NGOs to ensure maximum social throughput.
+- **📦 Zero-Friction Logistics**: Automated doorstep collection architecture for clothes and household essentials.
+- **💎 Premium UI/UX**: A state-of-the-art **"Indigo & Mint"** design system engineered for clarity and professional trust.
+- **🔒 Secure Architecture**: End-to-end TypeScript reliability with HttpOnly JWT authentication.
+- **📂 Local-First Persistence**: Powered by SQLite for zero-installation, portable database management.
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) + [Framer Motion](https://www.framer.com/motion/)
+- **Database**: [SQLite](https://sqlite.org/) (Zero-setup local database)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/EricNicP/KindSync.git
+cd KindSync
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Initialize Database
+KindSync uses SQLite, so there is no database server to install. Simply run:
+```bash
+npx prisma migrate dev --name init
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Configure Environment
+Create a `.env.local` file in the root directory:
+```env
+DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET="your-secure-secret-key"
+NODE_ENV="development"
+```
 
-## Learn More
+### 5. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to access the KindSync Node.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `/src/app`: Application routes and Server Components.
+- `/src/components`: High-fidelity UI components and forms.
+- `/src/lib`: Core utility functions (Auth, DB Client).
+- `/prisma`: Schema definitions and SQLite database migrations.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 License
+Distributed under the MIT License. See `LICENSE` for more information.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+**KindSync Logistics Group** // MMXXVI

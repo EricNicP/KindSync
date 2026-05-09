@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Package, Plus, Trash2, Calendar, MapPin, Phone, Zap, ArrowRight, Cpu } from 'lucide-react';
+import { Package, Plus, Trash2, Calendar, MapPin, Phone, Zap, ArrowRight, Cpu, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DonationForm() {
@@ -10,6 +10,7 @@ export default function DonationForm() {
   const [phone, setPhone] = useState('');
   const [pickupDate, setPickupDate] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const addItem = () => setItems([...items, { type: 'clothes', quantity: '', description: '' }]);
   const removeItem = (index: number) => setItems(items.filter((_, i) => i !== index));
@@ -27,11 +28,12 @@ export default function DonationForm() {
         }),
       });
       if (res.ok) {
-        alert('Donation entry logged in the network.');
+        setSuccess(true);
         setItems([{ type: 'clothes', quantity: '', description: '' }]);
         setAddress('');
         setPhone('');
         setPickupDate('');
+        setTimeout(() => setSuccess(false), 5000);
       } else {
         const data = await res.json();
         alert(data.error || 'Interface error');
@@ -44,37 +46,38 @@ export default function DonationForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-16">
-      <div className="space-y-10">
-        <div className="flex items-center justify-between border-b border-[hsl(var(--border-subtle))] pb-8">
+    <form onSubmit={handleSubmit} className="space-y-12">
+      {/* Items Section */}
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-4xl font-black tracking-tighter mb-2">INVENTORY_LOG</h3>
-            <p className="text-xs font-mono text-[hsl(var(--accent-primary))] uppercase tracking-[0.4em]">Section 01: Resource Parameters</p>
+            <h3 className="text-2xl font-black uppercase tracking-tight">Resource_Inventory</h3>
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mt-1">Section 01 // Node_Payload</p>
           </div>
           <button 
             type="button" 
             onClick={addItem}
-            className="flex items-center gap-3 text-xs font-mono font-bold tracking-widest text-[hsl(var(--accent-primary))] hover:brightness-125 transition-all"
+            className="nav-button !py-2 !px-4 !text-[10px]"
           >
-            <Plus size={20} /> [ADD_NODE]
+            <Plus size={14} /> Add_Item
           </button>
         </div>
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           <AnimatePresence>
             {items.map((item, index) => (
               <motion.div 
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="tech-card bg-[hsl(var(--bg-elevated))] group"
+                className="bg-white/5 border border-white/10 p-6 rounded-2xl relative group"
               >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                   <div className="lg:col-span-3">
-                    <label className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[hsl(var(--text-muted))] mb-4 block">Item_Class</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[hsl(var(--primary))] mb-2 block">Class</label>
                     <select 
-                      className="w-full bg-[hsl(var(--bg-deep))] border border-[hsl(var(--border-subtle))] p-4 rounded-xl text-sm font-mono focus:border-[hsl(var(--accent-primary))] outline-none transition-colors"
+                      className="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-sm text-white focus:border-[hsl(var(--primary))] outline-none transition-all"
                       value={item.type}
                       onChange={(e) => {
                         const newItems = [...items];
@@ -82,17 +85,17 @@ export default function DonationForm() {
                         setItems(newItems);
                       }}
                     >
-                      <option value="clothes">CLOTHES_ASSET</option>
-                      <option value="household">HOUSEHOLD_ASSET</option>
-                      <option value="books">DATA_ASSET_BOOKS</option>
-                      <option value="other">GENERIC_ASSET</option>
+                      <option value="clothes">CLOTHES_NODE</option>
+                      <option value="household">HOUSEHOLD_NODE</option>
+                      <option value="books">DATA_NODE_BOOKS</option>
+                      <option value="other">GENERIC_NODE</option>
                     </select>
                   </div>
                   <div className="lg:col-span-3">
-                    <label className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[hsl(var(--text-muted))] mb-4 block">Quant_Value</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[hsl(var(--primary))] mb-2 block">Quant</label>
                     <input 
-                      placeholder="e.g. 10.0"
-                      className="w-full bg-[hsl(var(--bg-deep))] border border-[hsl(var(--border-subtle))] p-4 rounded-xl text-sm font-mono focus:border-[hsl(var(--accent-primary))] outline-none transition-colors"
+                      placeholder="UNIT_COUNT"
+                      className="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-sm text-white focus:border-[hsl(var(--primary))] outline-none transition-all"
                       value={item.quantity}
                       onChange={(e) => {
                         const newItems = [...items];
@@ -103,10 +106,10 @@ export default function DonationForm() {
                     />
                   </div>
                   <div className="lg:col-span-6">
-                    <label className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[hsl(var(--text-muted))] mb-4 block">Metadata_Desc</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[hsl(var(--primary))] mb-2 block">Specifications</label>
                     <input 
-                      placeholder="Input additional parameters..."
-                      className="w-full bg-[hsl(var(--bg-deep))] border border-[hsl(var(--border-subtle))] p-4 rounded-xl text-sm font-mono focus:border-[hsl(var(--accent-primary))] outline-none transition-colors"
+                      placeholder="Input item metadata..."
+                      className="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-sm text-white focus:border-[hsl(var(--primary))] outline-none transition-all"
                       value={item.description}
                       onChange={(e) => {
                         const newItems = [...items];
@@ -120,7 +123,7 @@ export default function DonationForm() {
                   <button 
                     type="button" 
                     onClick={() => removeItem(index)}
-                    className="absolute right-4 top-4 text-[hsl(var(--text-muted))] hover:text-red-500 transition-colors"
+                    className="absolute right-4 top-4 text-white/20 hover:text-red-500 transition-colors"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -131,46 +134,47 @@ export default function DonationForm() {
         </div>
       </div>
 
-      <div className="space-y-10">
-        <div className="border-b border-[hsl(var(--border-subtle))] pb-8">
-          <h3 className="text-4xl font-black tracking-tighter mb-2">LOGISTICS_LINK</h3>
-          <p className="text-xs font-mono text-[hsl(var(--accent-secondary))] uppercase tracking-[0.4em]">Section 02: Node Geolocation</p>
+      {/* Logistics Section */}
+      <div className="space-y-8">
+        <div>
+          <h3 className="text-2xl font-black uppercase tracking-tight">Logistics_Link</h3>
+          <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mt-1">Section 02 // Node_Synchronization</p>
         </div>
-        <div className="tech-card border-l-4 border-[hsl(var(--accent-secondary))]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="space-y-4">
-              <label className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[hsl(var(--text-muted))]">Pickup_Address</label>
+        <div className="bg-white/5 border border-white/10 p-8 rounded-[32px] space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[hsl(var(--primary))] ml-2">Pickup_Target</label>
               <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-[hsl(var(--accent-secondary))]" size={18} />
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
                 <input 
-                  placeholder="GEO_COORD / STREET"
-                  className="w-full bg-[hsl(var(--bg-deep))] border border-[hsl(var(--border-subtle))] pl-12 pr-4 py-4 rounded-xl text-sm font-mono focus:border-[hsl(var(--accent-secondary))] outline-none transition-colors"
+                  placeholder="GEO_ADDRESS"
+                  className="w-full bg-black/40 border border-white/10 pl-12 pr-4 py-3.5 rounded-xl text-sm text-white focus:border-[hsl(var(--primary))] outline-none transition-all"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   required
                 />
               </div>
             </div>
-            <div className="space-y-4">
-              <label className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[hsl(var(--text-muted))]">Comms_Link</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[hsl(var(--primary))] ml-2">Contact_Tel</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-[hsl(var(--accent-secondary))]" size={18} />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
                 <input 
-                  placeholder="PHONE_TEL"
-                  className="w-full bg-[hsl(var(--bg-deep))] border border-[hsl(var(--border-subtle))] pl-12 pr-4 py-4 rounded-xl text-sm font-mono focus:border-[hsl(var(--accent-secondary))] outline-none transition-colors"
+                  placeholder="LOCAL_PHONE"
+                  className="w-full bg-black/40 border border-white/10 pl-12 pr-4 py-3.5 rounded-xl text-sm text-white focus:border-[hsl(var(--primary))] outline-none transition-all"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
                 />
               </div>
             </div>
-            <div className="md:col-span-2 space-y-4">
-              <label className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[hsl(var(--text-muted))]">Schedule_Window</label>
+            <div className="md:col-span-2 space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[hsl(var(--primary))] ml-2">Time_Window</label>
               <div className="relative">
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-[hsl(var(--accent-secondary))]" size={18} />
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
                 <input 
                   type="datetime-local"
-                  className="w-full bg-[hsl(var(--bg-deep))] border border-[hsl(var(--border-subtle))] pl-12 pr-4 py-4 rounded-xl text-sm font-mono focus:border-[hsl(var(--accent-secondary))] outline-none transition-colors"
+                  className="w-full bg-black/40 border border-white/10 pl-12 pr-4 py-3.5 rounded-xl text-sm text-white focus:border-[hsl(var(--primary))] outline-none transition-all"
                   value={pickupDate}
                   onChange={(e) => setPickupDate(e.target.value)}
                   required
@@ -181,13 +185,30 @@ export default function DonationForm() {
         </div>
       </div>
 
-      <button 
-        type="submit" 
-        disabled={loading}
-        className="btn-tech btn-tech-primary w-full justify-center text-xl py-6 border-2 border-transparent hover:border-white transition-all"
-      >
-        {loading ? "TRANSMITTING..." : "INITIALIZE_LOGISTICS"} <Zap size={24} />
-      </button>
+      <div className="relative pt-4">
+        <AnimatePresence>
+          {success && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="absolute -top-12 left-0 w-full flex justify-center"
+            >
+              <div className="bg-[hsl(var(--primary))] text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                <CheckCircle2 size={12} /> Sync_Success: Node_Initialized
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="btn-main btn-main-primary w-full justify-center py-6 text-xl shadow-[0_0_40px_hsla(var(--primary)/0.2)]"
+        >
+          {loading ? "TRANSMITTING..." : "INITIALIZE_PROTOCOL"} <Zap size={24} />
+        </button>
+      </div>
     </form>
   );
 }
