@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  password          String
+  role              String    @default("DONOR") // DONOR, NGO, ADMIN
+  phone             String?
+  address           String?
+  
+  // NGO specific details (simplified for SQLite)
+  ngoRegNumber      String?
+  ngoIsVerified     Boolean   @default(false)
+  ngoDescription    String?
+  ngoWebsite        String?
+  
+  donations         Donation[] @relation("DonorDonations")
+  assignedDonations Donation[] @relation("NGODonations")
+  
+  createdAt         DateTime  @default(now())
+}
+
+model Donation {
+  id            String   @id @default(cuid())
+  donorId       String
+  donor         User     @relation("DonorDonations", fields: [donorId], references: [id])
+  
+  items         String   // JSON string of items
+  status        String   @default("PENDING") // PENDING, ACCEPTED, PICKED_UP, DISTRIBUTED, CANCELLED
+  
+  ngoId         String?
+  assignedNGO   User?    @relation("NGODonations", fields: [ngoId], references: [id])
+  
+  pickupAddress String?
+  pickupTime    DateTime?
+  pickupPhone   String?
+  
+  images        String?  // JSON string of image URLs
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
